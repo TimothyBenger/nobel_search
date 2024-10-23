@@ -1,0 +1,28 @@
+version: '3'
+services:
+  fastapi:
+    build: .
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mongodb
+    env_file:
+      - .env
+
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - /data/db
+
+  test:
+    build: .
+    command: ["pytest", "--disable-warnings", "-v"]
+    env_file:
+      - .env
+    depends_on:
+      - mongodb
+    environment:
+      - PYTHONPATH=/app
